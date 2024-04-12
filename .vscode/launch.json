@@ -1,0 +1,136 @@
+{
+    // 使用 IntelliSense 了解相关属性。 
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "env":{
+                "CUDA_VISIBLE_DEVICES": "1"
+            },
+            "name": "train: replica instance",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/train_ins_scannet.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "args": ["--config", "configs/gnt_replica_instance.txt", "--expname", "debug","--ckpt_path", "./out/gnt_best.pth", "--no_load_opt", "--no_load_scheduler"]
+        },
+        {
+            "env":{
+                "CUDA_VISIBLE_DEVICES": "1"
+            },
+            "name": "render: replica instance",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/render_ins_scannet_video.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "args": ["--config", "configs/gnt_replica_instance.txt", "--expname", "ins_replica_gpu_8", "--no_load_opt", "--no_load_scheduler", "--chunk_size", "512", "--train_scenes", "office_0"]
+        },
+        {
+            "env":{
+                "CUDA_VISIBLE_DEVICES": "1"
+            },
+            "name": "eval: replica instance",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/eval_ins_scannet.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "args": ["--config", "configs/gnt_replica_instance.txt", "--expname", "ins_replica_gpu_8", "--no_load_opt", "--no_load_scheduler", "--chunk_size", "512"]
+        },
+        {
+            "env":{
+                "CUDA_VISIBLE_DEVICES": "1"
+            },
+            "name": "train: replica",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/train_scannet.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "args": ["--config", "configs/gnt_replica.txt", "--expname", "debug","--ckpt_path", "./out/gnt_best.pth", "--no_load_opt", "--no_load_scheduler"]
+        },
+        {
+            "name": "eval: replica",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/eval_scannet.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "args": ["--config", "configs/gnt_replica.txt", "--expname", "debug", "--no_load_opt", "--ckpt_path", "./out/distill_replica/model_001999.pth", "--chunk_size", "2048"]
+        },
+        {
+            "name": "ft: replica",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/ft_scannet.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "args": ["--config", "configs/gnt_replica_ft.txt", "--expname", "debug", "--no_load_opt", "--ckpt_path", "./out/distill_replica/model_169999.pth", "--chunk_size", "512"]
+        },
+        {
+            "env":{
+                "CUDA_VISIBLE_DEVICES": "1"
+            },
+            "name": "train: scannet",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/train_scannet.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "args": ["--config", "configs/gnt_scannet.txt", "--expname", "debug","--ckpt_path", "./out/gnt_smeantic_0831_4/model_stage_2.pth", "--no_load_opt", "--no_load_scheduler"]
+            // "args": ["--config", "configs/gnt_scannet.txt", "--expname", "debug","--ckpt_path", "./out/gnt_best.pth", "--no_load_opt", "--no_load_scheduler"]
+        },
+        {
+            "name": "eval: semantic",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/eval_scannet.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "args": ["--config", "configs/gnt_scannet.txt", "--expname", "distill_dgs_gpu_8", "--no_load_opt", "--ckpt_path", "./out/distill_dgs_gpu_8/model_199999.pth", "--val_set_list","configs/scannetv2_test_split.txt"]
+        },
+        {
+            "name": "train: resunet",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/train_resunet.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "args": ["--model", "SSLSemModel", "-b", "1", "--expname", "debug", "--backbone_pretrain", "model_zoo/dino_resnet50_pretrain.pth"]
+            // "args": ["--model", "SSLSemModel", "-b", "1", "--expname", "debug", "--backbone_pretrain", "model_zoo/dino_resnet50_pretrain.pth"]
+        },
+        {
+            "name": "train: semantic_model",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/train_resunet.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "args": ["--expname", "semantic_model(Random10)"]
+            // "args": ["--expname", "debug"]
+        },
+        {
+            "name": "render: generalized",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/render.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "args": ["--config", "configs/gnt_scannet_ft.txt", "--expname", "distill_dgs_gpu_8"]
+            // "args": ["--model", "SSLSemModel", "-b", "1", "--expname", "debug", "--backbone_pretrain", "model_zoo/dino_resnet50_pretrain.pth"]
+        },
+        {
+            "name": "render: finetune",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/ft_render.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "args": ["--config", "configs/gnt_scannet_ft.txt", "--expname", "ft_distill_gpu_8"]
+            // "args": ["--model", "SSLSemModel", "-b", "1", "--expname", "debug", "--backbone_pretrain", "model_zoo/dino_resnet50_pretrain.pth"]
+        },
+    ]
+}

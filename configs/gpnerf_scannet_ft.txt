@@ -1,0 +1,44 @@
+### INPUT
+expname = ft_distill_gpu_8
+rootdir = ./
+render_stride = 2
+distributed = False
+
+### PRETRAIN Model
+no_load_opt
+no_load_scheduler
+ckpt_path = ./out/distill_gpu_4/model_359999.pth
+
+## dataset
+train_dataset = train_scannet
+dataset_weights = [1]
+eval_dataset = val_scannet
+val_set_list = configs/scannetv2_test_split.txt
+
+### TRAINING
+N_rand = 450
+lrate_feature = 0.005
+lrate_semantic = 0.005
+lrate_gnt = 0.00001
+lrate_decay_factor = 0.6
+lrate_decay_steps = 100000
+single_net = True
+trans_depth = 8
+
+### TESTING
+chunk_size = 2000
+
+### RENDERING
+N_importance = 16
+N_samples = 48
+inv_uniform = True
+white_bkgd = False
+
+### CONSOLE AND TENSORBOARD
+total_step = 16000
+i_print = 100
+save_interval = 2000
+
+### SEMANTIC SETTING
+save_feature = True
+semantic_model = fpn

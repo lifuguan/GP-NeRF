@@ -1,0 +1,51 @@
+### INPUT
+expname = gnt_replica
+rootdir = ./
+render_stride = 2
+distributed = False
+
+## dataset
+train_dataset = train_replica
+dataset_weights = [1]
+eval_dataset = val_replica
+val_set_list = configs/replica_test_split.txt
+original_width = 640
+original_height = 480
+
+### TRAINING
+N_rand = 400
+lrate_feature = 0.005
+lrate_semantic = 0.005
+lrate_gnt = 0.00001
+lrate_decay_factor = 0.6
+lrate_decay_steps = 4000
+single_net = True
+trans_depth = 8
+
+### TESTING
+chunk_size = 2000
+
+### RENDERING
+N_importance = 16
+N_samples = 48
+inv_uniform = True
+white_bkgd = False
+
+### CONSOLE AND TENSORBOARD
+total_step = 16000
+i_print = 100
+save_interval = 2000
+
+### SEMANTIC SETTING
+save_feature = True
+semantic_model = fpn
+
+###
+render_loss_scale = 0.25
+semantic_loss_scale = 0.75
+distill_loss_scale = 0.5
+depth_loss_scale = 0
+
+
+num_classes = 51
+ignore_label = 51
