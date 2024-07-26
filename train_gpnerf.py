@@ -198,7 +198,7 @@ def train(args):
 
             selected_inds = ray_batch["selected_inds"]
             fine_sem_out, loss_distill, loss_depth_guided_sem = model.sem_seg_head(que_deep_semantics, ret['outputs_fine']['feats_out'], selected_inds)
-            del ret['outputs_coarse']['feats_out'], ret['outputs_fine']['feats_out']
+            del ret['outputs_coarse']['feats_out'], ret['outputs_fine']['feats_out'], ret['outputs_coarse']['feats_out_3d'], ret['outputs_fine']['feats_out_3d']
             ret['outputs_coarse']['sems'] = fine_sem_out.permute(0,2,3,1)
             ret['outputs_fine']['sems'] = fine_sem_out.permute(0,2,3,1)
 
