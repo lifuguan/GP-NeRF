@@ -310,35 +310,30 @@ class GNT(nn.Module):
         # q_init -> maxpool
         q = rgb_feat.max(dim=2)[0]
 
-        deep_sem_out = []
+        deep_sem_3d, deep_sem_2d = [], []
         # transformer modules
         for i, (crosstrans, q_fc, selftrans) in enumerate(
             zip(self.view_crosstrans, self.q_fcs, self.view_selftrans)
         ):
-            # view transformer to update q
-            q = crosstrans(q, rgb_feat, deep_sem_feat, ray_diff, mask, ret_attn=self.ret_alpha)
-            # 'learned' aggregation
-            if self.ret_alpha:
-                q, view_sem_out = q
+            # view transformer to update q, 'learned' aggregation
+            q, view_sem_3d = crosstrans(q, rgb_feat, deep_sem_feat, ray_diff, mask, ret_attn=self.ret_alpha)
+
             # embed positional information
             if i % 2 == 0:
                 q = torch.cat((q, input_pts, input_views), dim=-1)
                 q = q_fc(q)
-            # ray transformer
-            if self.ret_alpha:
-                q = selftrans(q, view_sem_out, ret_attn=self.ret_alpha)
-            else:
-                q = selftrans(q, None, ret_attn=self.ret_alpha)
-            # return attention map & agg features
-            if self.ret_alpha:
-                q, attn, ray_sem_out = q
-                deep_sem_out.append(ray_sem_out)
+            # ray transformer, 'learned' density
+            q, attn, ray_sem_2d = selftrans(q, view_sem_3d, ret_attn=self.ret_alpha)
+            
+            deep_sem_2d.append(ray_sem_2d)
+            deep_sem_3d.append(view_sem_3d)
 
         # normalize & rgb
         h = self.norm(q)
         outputs = self.rgb_fc(h.mean(dim=1))
 
-        sem_feat = torch.stack(deep_sem_out, dim=0).sum(dim=0).mean(dim=1)
+        sem_feat_3d = torch.stack(deep_sem_3d, dim=0).sum(dim=0)
+        sem_feat = torch.stack(deep_sem_2d, dim=0).sum(dim=0).mean(dim=1)
         sem_feat = self.semantic_adaptor(sem_feat)
-        return torch.cat([outputs, attn], dim=1), sem_feat, None
+        return torch.cat([outputs, attn], dim=1), sem_feat, sem_feat_3d
                 
